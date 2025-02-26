@@ -5,5 +5,5 @@ Name: document Classification
 
 Authors:
 
-Aryan Patel - AryanPatel198 @ github
+Aryan Patel - AryanPatel198 @ github<br/>
 Sanjay Lagariya - Sanju2op @ github
