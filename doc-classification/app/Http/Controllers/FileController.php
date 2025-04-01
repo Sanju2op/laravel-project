@@ -11,7 +11,7 @@ class FileController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:pdf,doc,docx,jpg,png|max:2048', // Accepts only certain files
+            'file' => 'required|mimes:pdf,doc,docx,jpg,png,dart,js,html,css|max:2048', // Accepts only certain files
         ]);
 
         $uploadedFile = $request->file('file');
