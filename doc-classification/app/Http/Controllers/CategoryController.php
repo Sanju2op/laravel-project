@@ -47,11 +47,20 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      */
+    // public function show(Category $category)
+    // {
+    //     $category->load('documents.user');
+    //     return view('categories.show', compact('category'));
+    // }
+
     public function show(Category $category)
     {
-        $category->load('documents.user');
-        return view('categories.show', compact('category'));
+        // Fetch documents related to this category
+        $documents = $category->documents()->with('user')->latest()->paginate(10);
+
+        return view('categories.show', compact('category', 'documents'));
     }
+
 
     /**
      * Show the form for editing the specified resource.

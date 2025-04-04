@@ -39,9 +39,9 @@
                                 <a href="{{ route('categories.index') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('categories.*') ? 'border-blue-500 text-white' : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300' }}">
                                     Categories
                                 </a>
-                                <a href="{{ route('categories.create') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('categories.create') ? 'border-blue-500 text-white' : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300' }}">
+                                <!-- <a href="{{ route('categories.create') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('categories.create') ? 'border-blue-500 text-white' : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300' }}">
                                     New Category
-                                </a>
+                                </a> -->
                             </div>
                         </div>
 
@@ -80,6 +80,12 @@
                     </div>
                 </div>
             </nav>
+
+            <header class="bg-gray-900 shadow">
+                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 bg-gray-800">
+                    {{ $header ?? '' }}
+                </div>
+            </header>
 
             <!-- Page Content -->
             <main class="py-12">
