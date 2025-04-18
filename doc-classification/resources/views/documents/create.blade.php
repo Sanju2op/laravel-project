@@ -16,7 +16,7 @@
                         <div>
                             <label for="title" class="block text-sm font-medium text-gray-300">Title</label>
                             <input type="text" name="title" id="title" value="{{ old('title') }}" required
-                                class="mt-1 block w-full bg-gray-700 border border-gray-600 text-black placeholder-gray-400 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                class="mt-1 block w-full bg-gray-700 border border-gray-600 text-gray-300    placeholder-gray-400 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="Enter document title">
                             @error('title')
                                 <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
@@ -27,7 +27,7 @@
                         <div>
                             <label for="category_id" class="block text-sm font-medium text-gray-300">Category</label>
                             <select name="category_id" id="category_id" required
-                                class="mt-1 block w-full bg-gray-700 border border-gray-600 text-black rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                class="mt-1 block w-full bg-gray-700 border border-gray-600 text-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                                 <option value="">Select a category</option>
                                 @foreach($categories as $category)
                                     <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
@@ -81,7 +81,7 @@
                         <div>
                             <label for="description" class="block text-sm font-medium text-gray-300">Description</label>
                             <textarea name="description" id="description" rows="3"
-                                class="mt-1 block w-full bg-gray-700 border border-gray-600 text-black placeholder-gray-400 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                class="mt-1 block w-full bg-gray-700 border border-gray-600 text-gray-300 placeholder-gray-400 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="Enter document description">{{ old('description') }}</textarea>
                             @error('description')
                                 <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
