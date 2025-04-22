@@ -3,7 +3,8 @@
 laravel - project : Pooja mam
 Name: document Classification
 
-Authors: Aryan Patel - AryanPatel198 @ github • Sanjay Lagariya - Sanju2op @ github 
+Authors: Aryan Patel - AryanPatel198 @ github • Sanjay Lagariya - Sanju2op @ github • Rathod Zeel - ZEEL026 @ github 
+
 
 
 1.
