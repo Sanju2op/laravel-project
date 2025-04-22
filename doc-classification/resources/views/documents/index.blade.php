@@ -27,6 +27,12 @@
                                 </svg>
                                 Upload Document
                             </a>
+                            <a href="{{ route('folders.create') }}" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7M16 3h-4a2 2 0 00-2 2v2h8V5a2 2 0 00-2-2z" />
+                                </svg>
+                                Upload Folder
+                            </a>
                         </div>
                     </div>
                 </div>
