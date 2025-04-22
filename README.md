@@ -6,7 +6,6 @@ Name: document Classification
 Authors: Aryan Patel - AryanPatel198 @ github • Sanjay Lagariya - Sanju2op @ github • Rathod Zeel - ZEEL026 @ github 
 
 
-
 1.
 to set up this project first fork this repo into your github and then clone it
 
