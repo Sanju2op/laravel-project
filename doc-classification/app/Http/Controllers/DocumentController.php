@@ -68,6 +68,10 @@ class DocumentController extends Controller
             'user_id' => auth()->id()
         ]);
 
+        // Send notification to user
+        $user = auth()->user();
+        $user->notify(new \App\Notifications\DocumentUploadedNotification($document, $user));
+
         return redirect()->route('documents.show', $document)
             ->with('success', 'Document uploaded successfully.');
     }

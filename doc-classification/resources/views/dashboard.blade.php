@@ -116,7 +116,7 @@
                                     <span class="text-sm text-gray-400">{{ $category['count'] }} documents</span>
                                 </div>
                                 <div class="w-full bg-gray-600 rounded-full h-2">
-                                    <div class="bg-blue-500 h-2 rounded-full" style="width: {{ ($category['count'] / $stats['total_documents']) * 100 }}%"></div>
+                                    <div class="bg-blue-500 h-2 rounded-full" style="width: {{ $stats['total_documents'] > 0 ? ($category['count'] / $stats['total_documents']) * 100 : 0 }}%"></div>
                                 </div>
                             </div>
                         @endforeach
