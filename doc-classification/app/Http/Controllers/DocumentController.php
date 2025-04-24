@@ -14,11 +14,20 @@ class DocumentController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Document::with(['category', 'user'])->latest();
+        $query = Document::with(['category', 'user'])
+            ->where('user_id', auth()->id());
 
-        // Search by title
+        // Search by title or file size or number of files/documents
         if ($request->has('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
+            $search = $request->search;
+            $searchLower = strtolower($search);
+            $query->where(function ($q) use ($search, $searchLower) {
+                $q->whereRaw('LOWER(title) like ?', ['%' . $searchLower . '%']);
+                if (is_numeric($search)) {
+                    $sizeInBytes = $search * 1024;
+                    $q->orWhere('file_size', $sizeInBytes);
+                }
+            });
         }
 
         // Filter by category
@@ -26,10 +35,88 @@ class DocumentController extends Controller
             $query->where('category_id', $request->category);
         }
 
+        // Sort by file size ascending or descending
+        if ($request->has('sort_size') && in_array($request->sort_size, ['asc', 'desc'])) {
+            $query->orderBy('file_size', $request->sort_size);
+        }
+
+        // Sort by date
+        if ($request->has('sort_date') && in_array($request->sort_date, ['asc', 'desc'])) {
+            $query->orderBy('created_at', $request->sort_date);
+        } else {
+            // Default sort by latest
+            $query->latest();
+        }
+
         $documents = $query->paginate(10);
         $categories = Category::orderBy('name')->get();
 
-        return view('documents.index', compact('documents', 'categories'));
+        // Fetch files from folders with similar filters
+        $filesQuery = \App\Models\File::with(['folder', 'folder.user', 'folder.category'])
+            ->whereHas('folder', function ($q) {
+                $q->where('user_id', auth()->id());
+            })
+            ->latest();
+
+        if ($request->has('search')) {
+            $search = $request->search;
+            $searchLower = strtolower($search);
+            $filesQuery->where(function ($q) use ($search, $searchLower) {
+                $q->whereRaw('LOWER(name) like ?', ['%' . $searchLower . '%']);
+                if (is_numeric($search)) {
+                    $sizeInBytes = $search * 1024;
+                    $q->orWhere('file_size', $sizeInBytes);
+                }
+            });
+            $filesQuery->whereHas('folder', function ($q) use ($search, $searchLower) {
+                $q->whereRaw('LOWER(title) like ?', ['%' . $searchLower . '%']);
+            });
+        }
+
+        if ($request->has('category') && $request->category != '') {
+            $filesQuery->whereHas('folder', function ($q) use ($request) {
+                $q->where('category_id', $request->category);
+            });
+        }
+
+        // Fetch folders with their files applying filters
+            $foldersQuery = \App\Models\Folder::with(['files', 'user', 'category'])
+            ->where('folders.user_id', auth()->id());
+
+        if ($request->has('search')) {
+            $search = $request->search;
+            $searchLower = strtolower($search);
+            $foldersQuery->where(function ($q) use ($search, $searchLower) {
+                $q->whereRaw('LOWER(title) like ?', [$searchLower . '%']);
+                if (is_numeric($search)) {
+                    $q->whereHas('files', function ($q2) use ($search) {
+                        $q2->selectRaw('count(*)')
+                            ->groupBy('folder_id')
+                            ->havingRaw('count(*) = ?', [(int)$search]);
+                    });
+                }
+            });
+        }
+
+        if ($request->has('category') && $request->category != '') {
+            $foldersQuery->where('category_id', $request->category);
+        }
+
+        // Sort folders by total file size
+        if ($request->has('folder_sort_size') && in_array($request->folder_sort_size, ['asc', 'desc'])) {
+            $foldersQuery->leftJoin('files', 'folders.id', '=', 'files.folder_id')
+                ->select('folders.id', 'folders.title', 'folders.category_id', 'folders.user_id', \DB::raw('COALESCE(SUM(files.file_size), 0) as total_file_size'), \DB::raw('MAX(files.created_at) as latest_upload'))
+                ->groupBy('folders.id', 'folders.title', 'folders.category_id', 'folders.user_id')
+                ->orderByRaw('SUM(files.file_size) ' . $request->folder_sort_size);
+        } else {
+            $foldersQuery->leftJoin('files', 'folders.id', '=', 'files.folder_id')
+                ->select('folders.id', 'folders.title', 'folders.category_id', 'folders.user_id', \DB::raw('COALESCE(SUM(files.file_size), 0) as total_file_size'), \DB::raw('MAX(files.created_at) as latest_upload'))
+                ->groupBy('folders.id', 'folders.title', 'folders.category_id', 'folders.user_id');
+        }
+
+        $folders = $foldersQuery->paginate(10);
+
+        return view('documents.index', compact('documents', 'categories', 'folders'));
     }
 
     /**
@@ -37,7 +124,7 @@ class DocumentController extends Controller
      */
     public function create()
     {
-        $categories = Category::orderBy('name')->get();
+        $categories = Category::where('user_id', auth()->id())->orderBy('name')->get();
         return view('documents.create', compact('categories'));
     }
 
@@ -90,7 +177,7 @@ class DocumentController extends Controller
      */
     public function edit(Document $document)
     {
-        $categories = Category::orderBy('name')->get();
+        $categories = Category::where('user_id', auth()->id())->orderBy('name')->get();
         return view('documents.edit', compact('document', 'categories'));
     }
 

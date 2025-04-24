@@ -19,6 +19,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
 
     Route::resource('folders', FolderController::class);
+    Route::get('folders/{folder}/download', [FolderController::class, 'download'])->name('folders.download');
+
+    Route::resource('files', FileController::class);
 
     Route::resource('categories', CategoryController::class);
 
