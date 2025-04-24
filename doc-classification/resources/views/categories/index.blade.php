@@ -63,9 +63,9 @@
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                                            <a href="{{ route('categories.show', $category) }}" class="text-blue-400 hover:text-blue-300">View</a>
-                                            <a href="{{ route('categories.edit', $category) }}" class="text-yellow-400 hover:text-yellow-300">Edit</a>
-                                            <form action="{{ route('categories.destroy', $category) }}" method="POST" class="inline">
+                                            <!-- Removed View button -->
+                                            <a href="{{ route('categories.edit', $category->id) }}" class="text-yellow-400 hover:text-yellow-300">Edit</a>
+                                            <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-red-400 hover:text-red-300" onclick="return confirm('Are you sure you want to delete this category?')">

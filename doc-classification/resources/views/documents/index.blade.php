@@ -64,6 +64,28 @@
                                     @endforeach
                                 </select>
                             </div>
+
+                            <!-- Sort by File Size -->
+                            <div>
+                                <label for="sort_size" class="block text-sm font-medium text-gray-300">Sort by File Size</label>
+                                <select name="sort_size" id="sort_size"
+                                    class="mt-1 block w-full bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="">None</option>
+                                    <option value="desc" {{ request('sort_size') == 'desc' ? 'selected' : '' }}>High to Low</option>
+                                </select>
+                            </div>
+
+                            <!-- Sort by Date -->
+                            <div>
+                                <label for="sort_date" class="block text-sm font-medium text-gray-300">Sort by Date</label>
+                                <select name="sort_date" id="sort_date"
+                                    class="mt-1 block w-full bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="">None</option>
+                                    <option value="desc" {{ request('sort_date') == 'desc' ? 'selected' : '' }}>Newest First</option>
+                                    <option value="asc" {{ request('sort_date') == 'asc' ? 'selected' : '' }}>Oldest First</option>
+                                </select>
+                            </div>
+
                         </div>
 
                         <!-- Filter Buttons -->
@@ -82,8 +104,9 @@
             </div>
 
             <!-- Documents Table -->
-            <div class="bg-gray-800 overflow-hidden shadow-sm rounded-lg">
+            <div class="bg-gray-800 overflow-hidden shadow-sm rounded-lg mb-6">
                 <div class="p-6">
+                    <h3 class="text-lg font-medium text-white mb-4">Documents</h3>
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-700">
                             <thead class="bg-gray-700">
@@ -165,6 +188,72 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Files Table -->
+            <div class="bg-gray-800 overflow-hidden shadow-sm rounded-lg">
+                <div class="p-6">
+                    <h3 class="text-lg font-medium text-white mb-4">Folders</h3>
+                    @forelse ($folders as $folder)
+                        <div class="bg-gray-700 rounded-lg p-4 mb-4">
+                            <div class="flex justify-between items-center cursor-pointer" onclick="toggleFolderFiles('folder-{{ $folder->id }}')">
+                                <div>
+                                    <h4 class="text-white font-semibold">{{ $folder->title }}</h4>
+                                    <p class="text-gray-400 text-sm">{{ $folder->category->name }} - Uploaded by {{ $folder->user->name }}</p>
+                                    <p class="text-gray-400 text-sm">{{ $folder->files->count() }} files</p>
+                                    <p class="text-gray-400 text-sm">Total Size: {{ number_format($folder->total_file_size / 1024, 2) }} KB</p>
+                                    <p class="text-gray-400 text-sm">Latest Upload: {{ $folder->latest_upload ? \Carbon\Carbon::parse($folder->latest_upload)->format('M d, Y h:i A') : 'N/A' }}</p>
+                                </div>
+                                <div class="space-x-2">
+                                    <a href="{{ route('folders.download', $folder) }}" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Download Folder</a>
+                                    <a href="{{ route('folders.show', $folder) }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">View</a>
+                                    <a href="{{ route('folders.edit', $folder) }}" class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Edit</a>
+                                    <form action="{{ route('folders.destroy', $folder) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this folder?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div id="folder-{{ $folder->id }}" class="hidden mt-4">
+                                <table class="min-w-full divide-y divide-gray-700">
+                                    <thead class="bg-gray-600">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">File Name</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Size</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Uploaded At</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-gray-800 divide-y divide-gray-700">
+                                        @foreach ($folder->files as $file)
+                                            <tr>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">{{ $file->name }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ number_format($file->file_size / 1024, 2) }} KB</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $file->created_at->format('M d, Y') }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    @empty
+                        <p class="text-gray-400">No folders found.</p>
+                    @endforelse
+                    <div class="mt-4">
+                        {{ $folders->links() }}
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                function toggleFolderFiles(id) {
+                    const element = document.getElementById(id);
+                    if (element.classList.contains('hidden')) {
+                        element.classList.remove('hidden');
+                    } else {
+                        element.classList.add('hidden');
+                    }
+                }
+            </script>
         </div>
     </div>
 </x-app-layout> 

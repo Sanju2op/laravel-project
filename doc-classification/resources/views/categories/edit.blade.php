@@ -9,14 +9,14 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-gray-800 overflow-hidden shadow-sm rounded-lg">
                 <div class="p-6">
-                    <form action="{{ route('categories.update', $category) }}" method="POST" class="space-y-6">
+                    <form action="{{ route('categories.update', $category['id']) }}" method="POST" class="space-y-6">
                         @csrf
                         @method('PUT')
 
                         <!-- Name -->
                         <div>
                             <label for="name" class="block text-sm font-medium text-gray-300">Name</label>
-                            <input type="text" name="name" id="name" value="{{ old('name', $category->name) }}" required
+                            <input type="text" name="name" id="name" value="{{ old('name', $category['name']) }}" required
                                 class="mt-1 block w-full bg-gray-700 border border-gray-600 text-white placeholder-gray-400 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="Enter category name">
                             @error('name')
@@ -29,7 +29,7 @@
                             <label for="description" class="block text-sm font-medium text-gray-300">Description</label>
                             <textarea name="description" id="description" rows="3"
                                 class="mt-1 block w-full bg-gray-700 border border-gray-600 text-white placeholder-gray-400 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                placeholder="Enter category description">{{ old('description', $category->description) }}</textarea>
+                                placeholder="Enter category description">{{ old('description', $category['description']) }}</textarea>
                             @error('description')
                                 <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                             @enderror

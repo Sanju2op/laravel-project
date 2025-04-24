@@ -46,7 +46,7 @@
                             <div class="mt-1">
                                 <div class="flex items-center space-x-4">
                                     <div class="flex-1">
-                                        <input type="file" name="file" id="file" required
+                                        <input type="file" name="file" id="file" required accept=".pdf,.doc,.docx,.txt"
                                             class="block w-full text-sm text-gray-300
                                             file:mr-4 file:py-2 file:px-4
                                             file:rounded-md file:border-0
